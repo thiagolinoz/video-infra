@@ -23,3 +23,9 @@ variable "tags" {
 variable "role_lab" {
   default = "arn:aws:iam::072216138316:role/LabRole" #TODO trocar pelo AWSAccountId da conta que for executar
 }
+
+variable "ssh_key" {
+  description = "Chave privada SSH para acessar a EC2"
+  type        = string
+  sensitive   = true
+}
