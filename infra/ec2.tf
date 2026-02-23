@@ -1,7 +1,3 @@
-variable "ssh_key" {
-  sensitive = true
-}
-
 resource "aws_instance" "app_server" {
   ami           = "ami-0f3caa1cf4417e51b"
   instance_type = "t2.micro"
