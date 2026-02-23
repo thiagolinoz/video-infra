@@ -21,6 +21,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID}}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          TF_VAR_ssh_key: ${{ secrets.SSH_PRIVATE_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Create S3 Backend Bucket if it doesn't exist
