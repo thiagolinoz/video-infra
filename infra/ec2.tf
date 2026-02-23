@@ -24,8 +24,8 @@ resource "aws_instance" "app_server" {
   }
 
   provisioner "file" {
-    source      = "${path.module}/../docker-compose.yml"
-    destination = "/home/ec2-user/docker-compose.yml"
+    source      = "${path.module}/../docker-compose.yaml"
+    destination = "/home/ec2-user/docker-compose.yaml"
   }
 
   provisioner "remote-exec" {
