@@ -42,4 +42,4 @@ jobs:
           terraform init
           terraform validate
           terraform plan
-          terraform apply -var="ssh_key" -auto-approve
+          terraform apply -var="ssh_key=${{ secrets.SSH_PRIVATE_KEY }}" -auto-approve
