@@ -38,9 +38,8 @@ jobs:
         id: apply
         run: |
           cd infra 
-          var ssh_key
           terraform fmt
           terraform init
           terraform validate
           terraform plan
-          terraform apply -auto-approve
+          terraform apply -var="ssh_key" -auto-approve
