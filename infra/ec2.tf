@@ -8,6 +8,11 @@ resource "aws_instance" "app_server" {
 
   user_data = <<-EOF
               #!/bin/bash
+              # Criar 2GB de Swap para não travar com Kafka
+              dd if=/dev/zero of=/swapfile bs=128M count=16
+              chmod 600 /swapfile
+              mkswap /swapfile
+              swapon /swapfile
               dnf update -y
               dnf install -y docker
               systemctl enable --now docker
