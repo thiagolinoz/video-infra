@@ -3,11 +3,6 @@ name: 'Terraform Destroy'
 on:
   workflow_dispatch:
 
-env:
-  BUCKET_NAME: postech-fiap-video-backend-eks
-  AWS_REGION: us-east-1
-  TF_VAR_ssh_key: ${{ secrets.SSH_PRIVATE_KEY }}
-
 jobs:
   destroy:
     name: 'Terraform Destroy'
@@ -37,4 +32,4 @@ jobs:
           cd infra 
           terraform init
           terraform plan -destroy
-          terraform destroy -var="ssh_key=${{ secrets.SSH_PRIVATE_KEY }}" -auto-approve
+          terraform destroy -auto-approve
