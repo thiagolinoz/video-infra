@@ -32,8 +32,12 @@ resource "aws_instance" "app_server" {
 
   provisioner "remote-exec" {
     inline = [
-      "while ! docker info > /dev/null 2>&1; do sleep 2; done",
-      "docker compose up -d"
+      "timeout 300 bash -c 'while ! docker info > /dev/null 2>&1; do sleep 10; done'",
+      "cd /home/ec2-user",
+      # Captura o IP privado da instância atual
+      "export PRIVATE_IP=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)",
+      # Sobe o docker passando essa variável
+      "PRIVATE_IP=$PRIVATE_IP sudo -E docker compose up -d"
     ]
   }
 }

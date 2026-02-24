@@ -12,6 +12,14 @@ resource "aws_security_group" "sg_ec2" {
   }
 
   ingress {
+    description = "Acesso do KafkaUI"
+    from_port   = 8088
+    to_port     = 8088
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
     description = "Acesso do EKS e Rede Interna"
     from_port   = 9092
     to_port     = 9092
