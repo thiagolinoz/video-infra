@@ -1,6 +1,6 @@
 resource "aws_instance" "app_server" {
   ami           = "ami-0f3caa1cf4417e51b"
-  instance_type = "t2.micro"
+  instance_type = "t3.medium"
   key_name      = "vockey" # Nome padrão da chave no AWS Academy
   subnet_id     = aws_subnet.subnet_public[0].id
   vpc_security_group_ids = [aws_security_group.sg_ec2.id]
@@ -8,11 +8,6 @@ resource "aws_instance" "app_server" {
 
   user_data = <<-EOF
               #!/bin/bash
-              # Criar 2GB de Swap para não travar com Kafka
-              dd if=/dev/zero of=/swapfile bs=128M count=16
-              chmod 600 /swapfile
-              mkswap /swapfile
-              swapon /swapfile
               dnf update -y
               dnf install -y docker
               systemctl enable --now docker
