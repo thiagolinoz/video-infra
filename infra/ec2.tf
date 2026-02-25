@@ -58,4 +58,6 @@ resource "aws_instance" "app_server" {
               cd /home/ec2-user/
               sudo /usr/local/bin/docker-compose up -d
               EOF
+
+  user_data_replace_on_change = true
 }
