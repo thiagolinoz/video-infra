@@ -5,6 +5,11 @@ resource "aws_instance" "app_server" {
   subnet_id     = aws_subnet.subnet_public[0].id
   vpc_security_group_ids = [aws_security_group.sg_ec2.id]
 
+  tags = {
+    Name    = "Kafka-Server-POC"
+    Version = "2.1"
+  }
+
 
   user_data = <<-EOF
               #!/bin/bash

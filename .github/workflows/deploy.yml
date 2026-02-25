@@ -41,4 +41,4 @@ jobs:
           terraform init
           terraform validate
           terraform plan
-          terraform apply -auto-approve -replace="aws_instance.ec2"
+          terraform apply -auto-approve -replace="aws_instance.app_server"
