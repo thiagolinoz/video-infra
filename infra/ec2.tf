@@ -37,10 +37,21 @@ resource "aws_instance" "app_server" {
                   environment:
                     KAFKA_BROKER_ID: 1
                     KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-                    KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://\$PRIVATE_IP:9092
+                    KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://$PRIVATE_IP:9092
                     KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
                     KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
                     KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+                kafka-ui:
+                  image: provectuslabs/kafka-ui:latest
+                  ports:
+                    - "8088:8080"
+                  depends_on:
+                    - kafka
+                  environment:
+                    KAFKA_CLUSTERS_0_NAME: local
+                    KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+                    KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
               EOT
 
               # 4. Subir o Kafka
