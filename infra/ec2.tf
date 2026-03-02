@@ -19,7 +19,7 @@ resource "aws_instance" "app_server" {
               sudo chmod +x /usr/local/bin/docker-compose
 
               cat <<EOT > /home/ec2-user/docker-compose.yml
-              ${templatefile("docker-compose.yml", { hostname = aws_route53_record.kafka.fqdn })}
+              ${file("docker-compose.yml")}
               EOT
 
               cd /home/ec2-user/
