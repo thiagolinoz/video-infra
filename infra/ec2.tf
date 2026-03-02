@@ -19,7 +19,7 @@ resource "aws_instance" "app_server" {
               sudo chmod +x /usr/local/bin/docker-compose
 
               cat <<EOT > /home/ec2-user/docker-compose.yml
-              ${file("docker-compose.yml")}
+              ${file("${path.module}/../docker-compose.yml")}
               EOT
 
               cd /home/ec2-user/
