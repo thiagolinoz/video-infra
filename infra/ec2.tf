@@ -18,8 +18,8 @@ resource "aws_instance" "app_server" {
               sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
               sudo chmod +x /usr/local/bin/docker-compose
 
-              cat <<EOT > /home/ec2-user/docker-compose.yml
-              ${file("${path.module}/../docker-compose.yml")}
+              cat <<EOT > /home/ec2-user/docker-compose.yaml
+              ${file("${path.module}/../docker-compose.yaml")}
               EOT
 
               cd /home/ec2-user/
