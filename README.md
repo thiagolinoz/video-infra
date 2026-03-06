@@ -5,7 +5,7 @@
  - Docker-compose
  - Banco de dados - DynamoDB
  - Spring boot
- - Swagger
+ - Swagger.
 
 ## Ambiente de Desenvolvimento:
 
