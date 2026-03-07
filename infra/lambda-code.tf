@@ -78,3 +78,45 @@ EOF
     filename = "index.py"
   }
 }
+
+data "archive_file" "s3_url_post" {
+  type        = "zip"
+  output_path = "postech-fiap-video-app-s3-url-post.zip"
+
+  source {
+    content  = <<EOF
+import boto3
+import json
+
+s3 = boto3.client("s3")
+
+BUCKET = "postech-fiap-bucket-videos-fase5"
+
+def lambda_handler(event, context):
+    body = event.get("body")
+    if body:
+        body = json.loads(body)
+    else:
+        body = {}
+
+    file_name = body.get("fileName", "default.mp4")
+
+
+    email = event["pathParameters"]["email"]
+    key = f"videos/{email}/{file_name}"
+
+    response = s3.generate_presigned_post(
+        Bucket=BUCKET,
+        Key=key,
+        ExpiresIn=300
+    )
+
+    return {
+        "statusCode": 200,
+        "headers": {"Content-Type": "application/json"},
+        "body": json.dumps(response)
+    }
+EOF
+    filename = "index.py"
+  }
+}

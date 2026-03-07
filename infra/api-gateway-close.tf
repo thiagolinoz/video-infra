@@ -78,24 +78,107 @@ resource "aws_api_gateway_integration" "app_video_email_videos_GET_integration" 
     "integration.request.path.email"          = "method.request.path.email"
   }
 }
+
+############################################
+# /api/v1/user/{email}/videos/upload #######
+############################################
+resource "aws_api_gateway_resource" "app_video_upload" {
+  rest_api_id = aws_api_gateway_rest_api.app_video.id
+  parent_id   = aws_api_gateway_resource.app_video_email_videos.id
+  path_part   = "upload"
+}
+
+# POST /api/v1/user/{email}/videos/upload
+resource "aws_api_gateway_method" "app_video_upload_POST" {
+  rest_api_id   = aws_api_gateway_rest_api.app_video.id
+  resource_id   = aws_api_gateway_resource.app_video_upload.id
+  http_method   = "POST"
+  authorization = "CUSTOM"
+  authorizer_id = aws_api_gateway_authorizer.lambda_authorizer.id
+
+  request_parameters = {
+    "method.request.header.Authorization" = true
+    "method.request.path.email"          = true
+  }
+}
+
+resource "aws_api_gateway_integration" "app_video_upload_POST_integration" {
+  rest_api_id             = aws_api_gateway_rest_api.app_video.id
+  resource_id             = aws_api_gateway_resource.app_video_upload.id
+  http_method             = aws_api_gateway_method.app_video_upload_POST.http_method
+  integration_http_method = "POST"
+  type                    = "HTTP_PROXY"
+  uri                     = "${var.host_video_app}/api/v1/user/{email}/videos/upload"
+
+  request_parameters = {
+    "integration.request.header.Authorization" = "method.request.header.Authorization"
+    "integration.request.path.email"          = "method.request.path.email"
+  }
+}
+
+############################################
+# /api/v1/user/{email}/videos/upload-url ###
+############################################
+resource "aws_api_gateway_resource" "app_video_upload_url" {
+  rest_api_id = aws_api_gateway_rest_api.app_video.id
+  parent_id   = aws_api_gateway_resource.app_video_email_videos.id
+  path_part   = "upload-url"
+}
+
+# POST /api/v1/user/{email}/videos/upload
+resource "aws_api_gateway_method" "app_video_upload_url_POST" {
+  rest_api_id   = aws_api_gateway_rest_api.app_video.id
+  resource_id   = aws_api_gateway_resource.app_video_upload_url.id
+  http_method   = "POST"
+  authorization = "CUSTOM"
+  authorizer_id = aws_api_gateway_authorizer.lambda_authorizer.id
+
+  request_parameters = {
+    "method.request.header.Authorization" = true
+    "method.request.path.email"          = true
+  }
+}
+
+resource "aws_api_gateway_integration" "app_video_upload_url_POST_integration" {
+  rest_api_id             = aws_api_gateway_rest_api.app_video.id
+  resource_id             = aws_api_gateway_resource.app_video_upload_url.id
+  http_method             = aws_api_gateway_method.app_video_upload_url_POST.http_method
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/${aws_lambda_function.url_s3_post.arn}/invocations"
+
+}
+
+############################################
+########## DEPLOYMENT SESSION ##############
+############################################
+
 resource "aws_api_gateway_deployment" "app_video_deployment" {
   depends_on = [
      aws_api_gateway_integration.app_video_email_videos_GET_integration,
-#     aws_api_gateway_method.pessoa_item_get,
-#     aws_api_gateway_authorizer.lambda_authorizer
+     aws_api_gateway_integration.app_video_upload_POST_integration,
+    aws_api_gateway_integration.app_video_upload_url_POST_integration,
+     aws_api_gateway_authorizer.lambda_authorizer
   ]
 
   rest_api_id = aws_api_gateway_rest_api.app_video.id
-  description = "Deployment for GET /api/v1/user/{email}/videos"
+  description = "Deployment for video_app"
 
   # Força nova deployment quando há mudanças
   triggers = {
     redeployment = sha1(jsonencode([
-       aws_api_gateway_resource.app_video_email_videos.id,
-       aws_api_gateway_method.app_video_email_videos_GET.id,
-#       aws_api_gateway_method.pessoa_post.id,
-       aws_api_gateway_integration.app_video_email_videos_GET_integration.id,
+      aws_api_gateway_resource.app_video_email_videos.id,
+      aws_api_gateway_method.app_video_email_videos_GET.id,
+      aws_api_gateway_integration.app_video_email_videos_GET_integration.id,
+      aws_api_gateway_resource.app_video_upload.id,
+      aws_api_gateway_method.app_video_upload_POST.id,
+      aws_api_gateway_integration.app_video_upload_POST_integration.id,
+      aws_api_gateway_method.app_video_upload_url_POST.id,
+      aws_api_gateway_resource.app_video_upload_url.id,
+      aws_api_gateway_integration.app_video_upload_url_POST_integration.id,
+#      aws_api_gateway_method.pessoa_post.id,
 #       aws_api_gateway_authorizer.lambda_authorizer.id,
+
     ]))
   }
 
