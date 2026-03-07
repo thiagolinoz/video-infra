@@ -6,7 +6,7 @@ on:
     branches: [main]
 
 env:
-  BUCKET_NAME: postech-fiap-video-backend-eks-dockerizado
+  BUCKET_NAME: postech-fiap-video-backend-eks-dockerizado-2
   AWS_REGION: us-east-1
 
 jobs:
