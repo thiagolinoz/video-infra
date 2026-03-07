@@ -21,9 +21,9 @@ variable "tags" {
 }
 
 variable "role_lab" {
-  default = "arn:aws:iam::072216138316:role/LabRole" #TODO trocar pelo AWSAccountId da conta que for executar
+  default = "arn:aws:iam::139005105795:role/LabRole" #TODO trocar pelo AWSAccountId da conta que for executar
 }
 
 variable "host_video_app" {
-  default = "http://a80c62cbfeacc4e67a1c37a38f178b23-394207266.us-east-1.elb.amazonaws.com"
+  default = "trocar"
 }

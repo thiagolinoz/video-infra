@@ -83,7 +83,7 @@ resource "aws_api_gateway_integration" "app_video_email_videos_GET_integration" 
   uri                     = "${var.host_video_app}/api/v1/user/{email}/videos"
 
   request_parameters = {
-    "integration.request.header.Authorization" = "method.request.header.Authorization"
+    #"integration.request.header.Authorization" = "method.request.header.Authorization"
     "integration.request.path.email"          = "method.request.path.email"
   }
 }
@@ -127,7 +127,7 @@ resource "aws_api_gateway_integration" "app_video_videoId_download_GET_integrati
   uri                     = "${var.host_video_app}/api/v1/user/{email}/videos/{videoId}/download"
 
   request_parameters = {
-    "integration.request.header.Authorization" = "method.request.header.Authorization"
+    #"integration.request.header.Authorization" = "method.request.header.Authorization"
     "integration.request.path.email"          = "method.request.path.email"
     "integration.request.path.videoId"          = "method.request.path.videoId"
   }
