@@ -79,40 +79,48 @@ resource "aws_api_gateway_integration" "app_video_email_videos_GET_integration" 
   }
 }
 
-############################################
-# /api/v1/user/{email}/videos/upload #######
-############################################
-resource "aws_api_gateway_resource" "app_video_upload" {
+########################################################
+# /api/v1/user/{email}/videos/{videoId}/download #######
+########################################################
+resource "aws_api_gateway_resource" "app_video_videoId" {
   rest_api_id = aws_api_gateway_rest_api.app_video.id
   parent_id   = aws_api_gateway_resource.app_video_email_videos.id
-  path_part   = "upload"
+  path_part   = "{videoId}"
 }
 
-# POST /api/v1/user/{email}/videos/upload
-resource "aws_api_gateway_method" "app_video_upload_POST" {
+resource "aws_api_gateway_resource" "app_video_videoId_download" {
+  rest_api_id = aws_api_gateway_rest_api.app_video.id
+  parent_id   = aws_api_gateway_resource.app_video_videoId.id
+  path_part   = "download"
+}
+
+# GET /api/v1/user/{email}/videos/{videoId}/download
+resource "aws_api_gateway_method" "app_video_videoId_download_GET" {
   rest_api_id   = aws_api_gateway_rest_api.app_video.id
-  resource_id   = aws_api_gateway_resource.app_video_upload.id
-  http_method   = "POST"
+  resource_id   = aws_api_gateway_resource.app_video_videoId_download.id
+  http_method   = "GET"
   authorization = "CUSTOM"
   authorizer_id = aws_api_gateway_authorizer.lambda_authorizer.id
 
   request_parameters = {
     "method.request.header.Authorization" = true
     "method.request.path.email"          = true
+    "method.request.path.videoId"          = true
   }
 }
 
-resource "aws_api_gateway_integration" "app_video_upload_POST_integration" {
+resource "aws_api_gateway_integration" "app_video_videoId_download_GET_integration" {
   rest_api_id             = aws_api_gateway_rest_api.app_video.id
-  resource_id             = aws_api_gateway_resource.app_video_upload.id
-  http_method             = aws_api_gateway_method.app_video_upload_POST.http_method
-  integration_http_method = "POST"
+  resource_id             = aws_api_gateway_resource.app_video_videoId_download.id
+  http_method             = aws_api_gateway_method.app_video_videoId_download_GET.http_method
+  integration_http_method = "GET"
   type                    = "HTTP_PROXY"
-  uri                     = "${var.host_video_app}/api/v1/user/{email}/videos/upload"
+  uri                     = "${var.host_video_app}/api/v1/user/{email}/videos/{videoId}/download"
 
   request_parameters = {
     "integration.request.header.Authorization" = "method.request.header.Authorization"
     "integration.request.path.email"          = "method.request.path.email"
+    "integration.request.path.videoId"          = "method.request.path.videoId"
   }
 }
 
@@ -156,7 +164,7 @@ resource "aws_api_gateway_integration" "app_video_upload_url_POST_integration" {
 resource "aws_api_gateway_deployment" "app_video_deployment" {
   depends_on = [
      aws_api_gateway_integration.app_video_email_videos_GET_integration,
-     aws_api_gateway_integration.app_video_upload_POST_integration,
+     aws_api_gateway_integration.app_video_videoId_download_GET_integration,
     aws_api_gateway_integration.app_video_upload_url_POST_integration,
      aws_api_gateway_authorizer.lambda_authorizer
   ]
@@ -170,9 +178,9 @@ resource "aws_api_gateway_deployment" "app_video_deployment" {
       aws_api_gateway_resource.app_video_email_videos.id,
       aws_api_gateway_method.app_video_email_videos_GET.id,
       aws_api_gateway_integration.app_video_email_videos_GET_integration.id,
-      aws_api_gateway_resource.app_video_upload.id,
-      aws_api_gateway_method.app_video_upload_POST.id,
-      aws_api_gateway_integration.app_video_upload_POST_integration.id,
+      aws_api_gateway_resource.app_video_videoId.id,
+      aws_api_gateway_method.app_video_videoId_download_GET.id,
+      aws_api_gateway_integration.app_video_videoId_download_GET_integration.id,
       aws_api_gateway_method.app_video_upload_url_POST.id,
       aws_api_gateway_resource.app_video_upload_url.id,
       aws_api_gateway_integration.app_video_upload_url_POST_integration.id,

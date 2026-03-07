@@ -87,6 +87,7 @@ data "archive_file" "s3_url_post" {
     content  = <<EOF
 import boto3
 import json
+import uuid
 
 s3 = boto3.client("s3")
 
@@ -99,7 +100,8 @@ def lambda_handler(event, context):
     else:
         body = {}
 
-    file_name = body.get("fileName", "default.mp4")
+    pre_file_name = body.get("fileName", "default.mp4")
+    file_name = str(uuid.uuid4()) + "_" + pre_file_name
 
 
     email = event["pathParameters"]["email"]
