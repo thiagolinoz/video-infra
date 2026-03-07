@@ -14,6 +14,15 @@ resource "aws_api_gateway_authorizer" "lambda_authorizer" {
   authorizer_result_ttl_in_seconds = 0 # <--- sem cache
 }
 
+resource "aws_lambda_permission" "allow_api_gateway_authorizer" {
+  statement_id  = "AllowExecutionFromAPIGatewayAuthorizer"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.authorizer.function_name
+  principal     = "apigateway.amazonaws.com"
+
+  source_arn = "${aws_api_gateway_rest_api.app_video.execution_arn}/*/*"
+}
+
 # /api
 resource "aws_api_gateway_resource" "app_video_api" {
   rest_api_id = aws_api_gateway_rest_api.app_video.id
