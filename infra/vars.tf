@@ -25,5 +25,5 @@ variable "role_lab" {
 }
 
 variable "host_video_app" {
-  default = "trocar"
+  default = "http://host.com"
 }
