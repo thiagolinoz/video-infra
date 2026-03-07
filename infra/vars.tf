@@ -25,5 +25,5 @@ variable "role_lab" {
 }
 
 variable "host_video_app" {
-  default = "http://host.com"
+  default = "http://ac70ec9886bb74de5bbfdd95ea488c72-1380118798.us-east-1.elb.amazonaws.com"
 }
